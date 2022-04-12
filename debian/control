@@ -1,0 +1,17 @@
+Source: juan
+Maintainer: Juan Olvera <juan@jolvera.dev>
+Section: python
+Priority: optional
+Build-Depends: python3-setuptools, python3-all, debhelper (>= 9)
+Standards-Version: 3.9.1
+
+Package: python3-juan
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}
+Description: Generate .gitignore files from the command line
+ # Juan
+ .
+ Juan generates .gitignore files from the command line
+ .
+ It supports Python 3.9+.
+

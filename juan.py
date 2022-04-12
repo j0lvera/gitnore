@@ -2,10 +2,9 @@ import zipfile
 import argparse
 import urllib.request
 from pathlib import Path
-
 from appdirs import AppDirs
 
-"""
+intro = """
  ▐▄▄▄▄• ▄▌ ▄▄▄·  ▐ ▄
   ·███▪██▌▐█ ▀█ •█▌▐█
 ▪▄ ███▌▐█▌▄█▀▀█ ▐█▐▐▌
@@ -13,23 +12,33 @@ from appdirs import AppDirs
  ▀▀▀• ▀▀▀  ▀  ▀ ▀▀ █▪
 """
 
-# gitignore repo url
+
+# Gitignore repo url
 gitignore_url = "https://github.com/github/gitignore/archive/master.zip"
 
-# Standard data directory
+# Determine appropriate platform-specific dirs
 dirs = AppDirs("juan")
 user_data_dir = dirs.user_data_dir
 
-# Gitignore file destination full path
+# Gitignore zip file destination full path
 gitignore_zip_file = f"{user_data_dir}/main.zip"
 
 # Gitignore contents directory
 gitignore_directory = f"{user_data_dir}/gitignore-main/"
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--update", action="store_true")
-parser.add_argument("--list", action="store_true")
-parser.add_argument("--generate")
+parser = argparse.ArgumentParser(
+    prog="juan",
+    description="Generate .gitignore files from the command line",
+    epilog="Juan is the distant cousin of Joe (https://github.com/karan/joe). I created this project because `joe` "
+    "was not working at the time.",
+)
+parser.add_argument(
+    "-u", "--update", action="store_true", help="update all available gitignore files"
+)
+parser.add_argument(
+    "-ls", "--list", action="store_true", help="list all available files"
+)
+parser.add_argument("-g", "--generate", help="generate gitignore files")
 args = parser.parse_args()
 
 
@@ -59,7 +68,7 @@ def format_name(file_name: str):
 def print_available_files():
     files = get_list_of_files()
     only_names = sorted([format_name(file.name) for file in files])
-    print((",").join(only_names))
+    print((", ").join(only_names))
 
 
 def find_file_by_names(file_names: str):
@@ -80,16 +89,18 @@ def find_file_by_names(file_names: str):
     return results
 
 
-def convert_to_list_of_strings(posix_path_list):
-    return [item.name for item in posix_path_list]
-
-
 def print_gitignore(files):
-    for file in files:
+    for file in sorted(files, reverse=True):
         with open(file) as f:
             print("#### juan made this: https://github.com/j0lv3r4/juan ####")
             print(f"\n### {file.name.replace('.gitignore', '')} ###\n")
             print(f.read())
+
+
+def list_available_files():
+    list_of_files = get_list_of_files()
+    print(f"{len(list(list_of_files))} .gitignore files:")
+    print_available_files()
 
 
 def main():
@@ -98,10 +109,12 @@ def main():
         download_gitignore(gitignore_url)
         extract_zip(gitignore_zip_file)
 
-    if args.list:
-        print_available_files()
+        list_available_files()
 
-    if args.generate:
+    elif args.list:
+        list_available_files()
+
+    elif args.generate:
         list_of_files = find_file_by_names(args.generate)
 
         if list_of_files.get("not_found"):
@@ -109,6 +122,10 @@ def main():
             print(f"Run `juan --list` to see a list of available gitignores.")
         else:
             print_gitignore(list_of_files.get("found"))
+
+    else:
+        print(intro)
+        parser.print_help()
 
 
 if __name__ == "__main__":

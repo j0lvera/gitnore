@@ -125,6 +125,7 @@ celerybeat.pid
 
 # Environments
 .env
+.envrc
 .venv
 env/
 venv/
@@ -341,3 +342,5 @@ tags
 # Persistent undo
 [._]*.un~
 
+### Debian ###
+.pc

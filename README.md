@@ -2,6 +2,8 @@
 
 `juan` generates `.gitignore` files for different programming languages or platforms from the command line.
 
+![](https://i.imgur.com/wq4NuuO.gif)
+
 Inspired by [joe](https://github.com/karan/joe), but following the [Command Line Interface Guidelines](https://clig.dev/#guidelines) and adding autocompletion (at some point). So, think of `juan` as a distant cousin of `joe`.
 
 ## Installation
